@@ -1,0 +1,8 @@
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ path('app_topic_list') }}">Topics</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('app_topic_view', {'id': Post.topic.id}) }}">{{ Post.topic.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('app_post_view', {'id': Post.id}) }}">{{ Post.name }}</a></li>
+    {% if Reply.id %}<li class="breadcrumb-item">{{ Reply.body }}</li>{% endif %}
+</ul>
+{% endblock %}

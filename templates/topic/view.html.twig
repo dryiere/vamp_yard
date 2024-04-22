@@ -3,6 +3,7 @@
 {% block title %}{{ Topic.name }}{% endblock %}
 
 {% block body %}
+    {% include 'topic/breadcrumbs.html.twig' %}
     <h1>{{ Topic.name }}</h1>
     <div class="">{{ Topic.description }}</div>
     {% if app.user %}
@@ -12,10 +13,11 @@
         {% for post in postPagination %}
             <tr {% if loop.index is odd %}class="color list-unstyled"{% endif %}>
                 <td>
-                    <h3><a class="link-dark" href="{{ path('app_topic_view', {'id': post.id}) }}">{{ post.name }}</a></h3>
-                    <span>Created: {{ post.createdAt | date('Y-m-d H:i:s') }} Updated: {{ post.updatedAt | date('Y:m:d H:i:s') }}</span>
+                    <h3><a class="link-dark" href="{{ path('app_post_view', {'id': post.id}) }}">{{ post.name }}</a></h3>
+                    <div class="content-panel">{{ post.body }}</div>
+                    <div class="xx-small align-right">Created: {{ post.createdAt | date('Y-m-d H:i:s') }} Updated: {{ post.updatedAt | date('Y:m:d H:i:s') }}</div>
                 </td>
-                {% if app.user.id is same as (post.userId) %}<td><a class="btn btn-sm btn-secondary" href="{{ path('app_post_create', {'id': post.id}) }}">Edit</a></td>{% endif %}
+                {% if app.user %}{% if app.user.id is same as (post.userId) %}<td><a class="btn btn-sm btn-secondary" href="{{ path('app_post_create', {'id': post.id}) }}">Edit</a></td>{% endif %}{% endif %}
             </tr>
         {% endfor %}
     </table>

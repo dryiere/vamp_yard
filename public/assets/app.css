@@ -9,3 +9,14 @@ form[name=registration_form] > div > * {
     display: inline-block;
 }
 form[name=registration_form] > div > *:first-child { width: 20%; }
+.xx-small {
+    font-size: 0.7em;
+}
+.align-right {
+    text-align: right;
+}
+ul.replies-list li {
+    position: relative;
+}
+ul.replies-list li .item-top-menu { position: absolute; top:10px; right: 10px; opacity: 0.75; }
+ul.replies-list li .item-top-menu > .btn { font-size: 0.7em; padding: 0 4px }

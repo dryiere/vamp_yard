@@ -18,9 +18,10 @@ class TopicController extends AbstractController
     #[Route('/', name: 'app_topic')]
     public function index(): Response
     {
-        return $this->render('topic/index.html.twig', [
-            'controller_name' => 'TopicController',
-        ]);
+        return $this->redirectToRoute('app_topic_list');
+//        return $this->render('topic/index.html.twig', [
+//            'controller_name' => 'TopicController',
+//        ]);
     }
 
     #[Route('/topic/list', name: 'app_topic_list')]
@@ -47,11 +48,11 @@ class TopicController extends AbstractController
         }
         $form = $this->createForm(TopicFormType::class, $topic);
         $form->handleRequest($request);
+        if(!$topic->getId()) {
+            $topic->setUser($this->getUser());
+            $topic->setCreatedAt(new \DateTimeImmutable('now'));
+        }
         if($form->isSubmitted() && $form->isValid()) {
-            if(!$topic->getId()) {
-                $topic->setUserId($this->getUser()->getId());
-                $topic->setCreatedAt(new \DateTimeImmutable('now'));
-            }
             $topic->setUpdatedAt(new \DateTimeImmutable('now'));
             $entityManager->persist($topic);
             $entityManager->flush();

@@ -23,7 +23,7 @@ class SecurityController extends AbstractController
             ->select('u')
             ->from('App\Entity\User', 'u')
             ->where('u.userroles LIKE :role')
-            ->setParameter('role', '%ROLE_ADMIN%')
+            ->setParameter('role', '%'.User::ROLE_ADMIN.'%')
             ->getQuery()->getOneOrNullResult();
         if(!$admin) {
             return $this->redirect('/register');

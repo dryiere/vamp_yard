@@ -1,0 +1,24 @@
+{% block replyitem %}
+    <h5><a class="link-dark">{{ reply.user }}</a></h5>
+    {% if app.user %}
+        {% if app.user.id is same as (reply.userId) %}
+        <div class="item-top-menu">
+            <a class="btn btn-light btn-sm btn-secondary" href="{{ path('app_reply_create', {'id': reply.id}) }}">Edit</a>
+        </div>
+        {% endif %}
+    {% endif %}
+    <div class="content-panel">{{ reply.body }}</div>
+    <div>
+        {% if app.user %}<span><a class="btn btn-light btn-sm" href="{{ path('app_reply_create', {'parent': reply.id}) }}">Reply</a></span>{% endif %}
+        <span class="xx-small float-sm-end">Created: {{ reply.createdAt | date('Y-m-d H:i:s') }} Updated: {{ reply.updatedAt | date('Y:m:d H:i:s') }}</span>
+    </div>
+    {% if reply.replies %}
+    <ul class="replies-list">
+        {% for reply in reply.replies %}
+            <li class="list-unstyled">
+                {% include 'reply/item.html.twig' %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
