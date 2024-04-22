@@ -1,0 +1,11 @@
+body {
+    font-family: sans-serif, "Segoe UI", "Helvetica Neue", Arial;
+}
+form > div {
+    display: block;
+    margin: 5px 0;
+}
+form[name=registration_form] > div > * {
+    display: inline-block;
+}
+form[name=registration_form] > div > *:first-child { width: 20%; }

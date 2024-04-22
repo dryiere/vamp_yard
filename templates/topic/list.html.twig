@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Topics{% endblock %}
+
+{% block body %}
+    {% if app.user %}
+        <a href="/topic/create" class="btn btn-sm btn-light">+ New Topic</a>
+    {% endif %}
+    <table class="table">
+        {% for topic in pagination %}
+            <tr {% if loop.index is odd %}class="color list-unstyled"{% endif %}>
+                <td>
+                    <h3><a class="link-dark" href="{{ path('app_topic_view', {'id': topic.id}) }}">{{ topic.name }}</a></h3>
+                    <span>Created: {{ topic.createdAt | date('Y-m-d H:i:s') }} Updated: {{ topic.updatedAt | date('Y:m:d H:i:s') }}</span>
+                </td>
+                {% if app.user %}
+                {% if app.user.id is same as (topic.userId) %}<td><a class="btn btn-sm btn-secondary" href="{{ path('app_topic_create', {'id': topic.id}) }}">Edit</a></td>{% endif %}
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}

@@ -38,6 +38,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $uptime = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $userroles = null;
+
+    private ?array $roles = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,7 +126,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $dec = json_decode($this->userroles);
+//        $roles = is_array($dec) ? array_merge($this->roles, $dec) : $this->roles;
+        $roles = is_array($dec) ? $dec : [];
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
@@ -134,12 +141,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
-
+        $this->userroles = json_encode($this->roles);
         return $this;
     }
     public function getPassword(): string
     {
         return $this->pwd;
+    }
+    public function __toString()
+    {
+        return $this->username ? $this->username . ' <' . $this->getEmail() . '>' : $this->getEmail();
     }
 }
