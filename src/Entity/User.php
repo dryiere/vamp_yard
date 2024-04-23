@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -37,6 +38,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $uptime = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $userroles = null;
+
+    #[ORM\OneToMany(targetEntity: Topic::class, mappedBy: 'user')]
+    private $topics;
+
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user')]
+    private $posts;
+
+    #[ORM\OneToMany(targetEntity: Reply::class, mappedBy: 'topic')]
+    private $replies;
+
+    private ?array $roles = [];
+
+    public const ROLE_ADMIN = "ROLE_ADMIN";
+    public const ROLE_USER = "ROLE_USER";
+
+    public function __construct()
+    {
+        $this->topics = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->replies = new ArrayCollection();
+    }
+
+    public function getTopics(): Collection
+    {
+        return $this->topics;
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function getReplies(): Collection
+    {
+        return $this->replies;
+    }
 
     public function getId(): ?int
     {
@@ -121,9 +161,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $dec = json_decode($this->userroles);
+        $roles = is_array($dec) ? $dec : [];
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = self::ROLE_USER;
 
         return array_unique($roles);
     }
@@ -134,12 +175,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
-
+        $this->userroles = json_encode($this->roles);
         return $this;
     }
     public function getPassword(): string
     {
         return $this->pwd;
+    }
+    public function getHasRole($rolename)
+    {
+        return in_array($rolename, $this->userroles);
+    }
+    public function __toString()
+    {
+        return $this->username ? $this->username . ' <' . $this->getEmail() . '>' : $this->getEmail();
     }
 }

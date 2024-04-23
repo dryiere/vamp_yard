@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Reply{% endblock %}
+
+{% block body %}
+    {% include 'reply/breadcrumbs.html.twig' %}
+    <h2>{% if Reply.id %}Edit reply{% else %}Create reply{% endif %}
+        {% if ReplyParent and ReplyParent.id %}to <span class="xx-small">"{{ ReplyParent.body|length > 30 ? ReplyParent.body|slice(0,30)~'...': ReplyParent.body }}" [{{ ReplyParent.user }}]</span>{% else %}for "<span class="text-info">{{ Post.name }}</span>" post.{% endif %}</h2>
+    {{ form_start(form) }}
+        {{ form_row(form.body, {
+            attr: {'class': 'form-control'}
+        }) }}
+        {{ form_row(form.post_id) }}
+        <button type="submit" class="btn btn-lg btn-primary">Save</button>
+    {{ form_end(form) }}
+{% endblock %}

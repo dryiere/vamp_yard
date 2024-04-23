@@ -1,0 +1,8 @@
+header.navbar {
+    background-color: #F0F0F0;
+    box-shadow: 0 0 5px #000000;
+}
+header.navbar .offcanvas-body {
+    text-transform: uppercase;
+    font-weight: bold;
+}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReplyRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,23 @@ class Reply
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'replies')]
+    private $post;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'replies')]
+    private $user;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
+    private ?self $reply_id = null;
+
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'reply_id')]
+    private Collection $replies;
+
+    public function __construct()
+    {
+        $this->replies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +109,70 @@ class Reply
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getPost(): ?Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Post $post): ?Post
+    {
+        return $this->post = $post;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getReplyId(): ?self
+    {
+        return $this->reply_id;
+    }
+
+    public function setReplyId(?self $reply_id): static
+    {
+        $this->reply_id = $reply_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getReplies(): Collection
+    {
+        return $this->replies;
+    }
+
+    public function addReply(self $reply): static
+    {
+        if (!$this->replies->contains($reply)) {
+            $this->replies->add($reply);
+            $reply->setReplyId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReply(self $reply): static
+    {
+        if ($this->replies->removeElement($reply)) {
+            // set the owning side to null (unless already changed)
+            if ($reply->getReplyId() === $this) {
+                $reply->setReplyId(null);
+            }
+        }
 
         return $this;
     }
