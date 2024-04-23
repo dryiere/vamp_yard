@@ -25,9 +25,7 @@ class PostController extends AbstractController
     #[Route('/post/create', name: 'app_post_create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $topic = $request->get('topic') ? $entityManager->getRepository(Topic::class)->find($request->get('topic')) : null;
-        if(!$topic instanceof Topic)
-            throw new HttpException(404, 'Topic could not be found.');
+
 
         $post = new Post();
         if($request->get('id')) {
@@ -39,6 +37,9 @@ class PostController extends AbstractController
             if(!in_array('ROLE_ADMIN', $this->getUser()->getRoles()) || $post->getUserId() !== $this->getUser()->getId())
                 throw new HttpException(403, 'You\'re not allowed to edit this topic.');
         } else {
+            $topic = $request->get('topic') ? $entityManager->getRepository(Topic::class)->find($request->get('topic')) : null;
+            if(!$topic instanceof Topic)
+                throw new HttpException(404, 'Topic could not be found.');
             $post->setTopic($topic);
             $post->setUser($this->getUser());
             $post->setCreatedAt(new \DateTimeImmutable('now'));
@@ -49,10 +50,10 @@ class PostController extends AbstractController
             $post->setUpdatedAt(new \DateTimeImmutable('now'));
             $entityManager->persist($post);
             $entityManager->flush();
-            return $this->redirectToRoute('app_topic_view', ['id' => $topic->getId()]);
+            return $this->redirectToRoute('app_topic_view', ['id' => $post->getTopic()->getId()]);
         }
         return $this->render('post/create.html.twig', [
-            'Topic' => $topic,
+            'Topic' => $post->getTopic(),
             'Post' => $post,
             'form' => $form->createView(),
         ]);

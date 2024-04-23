@@ -13,7 +13,6 @@ class PostFormType extends AbstractType
         $builder
             ->add('name')
             ->add('body')
-            ->add('id', HiddenType::class)
             ->add('topic_id', HiddenType::class);
     }
 }
