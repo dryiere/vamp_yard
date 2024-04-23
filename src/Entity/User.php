@@ -175,7 +175,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function setRoles(array $roles): self
     {
-        $this->userroles = json_encode($this->roles);
+        $this->userroles = json_encode($roles);
         return $this;
     }
     public function getPassword(): string
