@@ -29,12 +29,23 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            $admin = $entityManager->createQueryBuilder()
+                ->select('u')
+                ->from('App\Entity\User', 'u')
+                ->where('u.userroles LIKE :role')
+                ->setParameter('role', '%'.User::ROLE_ADMIN.'%')
+                ->getQuery()->getOneOrNullResult();
+            if(!$admin) {
+                $user->setRoles([User::ROLE_ADMIN,User::ROLE_USER]);
+            } else {
+                $user->setRoles([User::ROLE_USER]);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_topic');
+            return $admin ? $this->redirectToRoute('admin') : $this->redirectToRoute('app_topic');
         }
 
         return $this->render('registration/register.html.twig', [

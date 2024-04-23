@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Post{% endblock %}
+
+{% block body %}
+    {% include 'post/breadcrumbs.html.twig' %}
+    <h2>{% if Post.id %}Edit post{% else %}Create post{% endif %} for "<span class="text-info">{{ Topic.name }}</span>" topic.</h2>
+    {{ form_start(form) }}
+        {{ form_row(form.name, {
+            attr: {'class': 'form-control'}
+        }) }}
+        {{ form_row(form.body, {
+            attr: {'class': 'form-control'}
+        }) }}
+        {{ form_row(form.topic_id) }}
+        <button type="submit" class="btn btn-lg btn-primary">Save</button>
+    {{ form_end(form) }}
+{% endblock %}

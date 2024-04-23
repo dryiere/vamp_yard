@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ Post.name }}{% endblock %}
+
+{% block body %}
+    {% include 'post/breadcrumbs.html.twig' %}
+    <h3><span class="text-info">{{ Post.name }}</span></h3>
+    <div class="">{{ Post.body }}</div>
+    {% if app.user %}
+        <a href="{{ path('app_reply_create', {'post': Post.id}) }}" class="btn btn-sm btn-light">+ New Reply</a>
+    {% endif %}
+    <ul class="replies-list">
+        {% for reply in replyPagination %}
+            <li class="list-unstyled">
+                {% include 'reply/item.html.twig' %}
+            </li>
+        {% endfor %}
+    </ul>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(replyPagination) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Topic{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_row(form.name, {
+            attr: {'class': 'form-control'}
+        }) }}
+        {{ form_row(form.description, {
+            attr: {'class': 'form-control'}
+        }) }}
+
+        <button type="submit" class="btn btn-lg btn-primary">Save</button>
+    {{ form_end(form) }}
+{% endblock %}
